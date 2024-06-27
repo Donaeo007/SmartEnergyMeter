@@ -30,9 +30,10 @@ def homepage(request):
     power = Sourcedatabase.child('smartMeter').child('power').get().val()
     energy = Sourcedatabase.child('smartMeter').child('energy').get().val()
     cost = Sourcedatabase.child('smartMeter').child('cost').get().val()
+    powerfactor = Sourcedatabase.child('smartMeter').child('powerfactor').get().val()
     unixtime = Sourcedatabase.child('smartMeter').child('unixtime').get().val()
     Data = {"voltage": voltage, "current": current, "power":power,
-            "energy":energy, "cost":cost, "unixtime":unixtime}
+            "energy":energy, "powerfactor":powerfactor, "cost":cost, "unixtime":unixtime}
     return render(request, "index.html", {"data": Data})
 
 
@@ -41,10 +42,11 @@ def updateDashboard(request):
     current = Sourcedatabase.child('smartMeter').child('current').get().val()
     power = Sourcedatabase.child('smartMeter').child('power').get().val()
     energy = Sourcedatabase.child('smartMeter').child('energy').get().val()
+    powerfactor = Sourcedatabase.child('smartMeter').child('powerfactor').get().val()
     cost = Sourcedatabase.child('smartMeter').child('cost').get().val()
     unixtime = Sourcedatabase.child('smartMeter').child('unixtime').get().val()
     updatedData = {"voltage": voltage, "current": current, "power":power,
-            "energy":energy, "cost":cost, "unixtime":unixtime}
+            "energy":energy, "powerfactor":powerfactor,"cost":cost, "unixtime":unixtime}
     return JsonResponse(updatedData)
   
 

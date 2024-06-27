@@ -19,6 +19,7 @@
     <h2 id="cur"> Current: {{data.current}} </h2>
     <h2 id="pwr"> Power : {{data.power}}</h2>
     <h2 id="eng"> energy : {{data.energy}}</h2>
+    <h2 id="pwf"> factor : {{data.powerfactor}}</h2>
     <h2 id="cst"> cost : {{data.cost}}</h2>
     <h2 id="utc"> unixtime : {{data.unixtime}}</h2>
     <!--<script>
@@ -45,6 +46,7 @@
                     $('#cur').text('Current: ' + result['current']);
                     $('#pwr').text('Power: ' + result['power']);
                     $('#eng').text('Energy: ' + result['energy']);
+                    $('#pwf').text('factor: ' + result['powerfactor']);
                     $('#cst').text('Cost: ' + result['cost']);
                     $('#utc').text('Unixtime: ' + result['unixtime']);
                 },

@@ -12,6 +12,7 @@ function updateDashboard(){
         $('#cur').text('Current: ' + result['current']);
         $('#pwr').text('Power: ' + result['power']);
         $('#eng').text('Energy: ' + result['energy']);
+        $('#pwf').text('factor: ' + result['powerfactor']);
         $('#cst').text('Cost: ' + result['cost']);
         $('#utc').text('Unixtime: ' + result['unixtime']);
         /*$('#total-ener').html(result['TotalEnergy']+'<sub>kWh</sub>');
