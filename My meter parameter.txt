@@ -17,3 +17,7 @@ Database secret: YddvtPTzh2eeg5CFILSrQIzyVNPmxP0UIJ6DSwqN
 Web API key:  AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs
 Email: mymeter@gmail.com
 Password: mymeter111
+
+
+https://arduino.esp8266.com/stable/package_esp8266com_index.json
+https://espressif.github.io/arduino-esp32/package_esp32_index.json

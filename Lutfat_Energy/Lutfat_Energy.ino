@@ -22,16 +22,16 @@ int8_t TIME_ZONE = 1; //NYC(USA): -5 UTC
 
 //DB CONFIGURATION DATA
 //Comment if user login is not required
-#define API_KEY "AIzaSyD-c45EtVmZ4PYWdP6uce7HsmqLcIdoUhc"
+#define API_KEY "AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs"
 
 /* 3. Define the RTDB URL */
-#define DATABASE_URL "https://ecowise-48198-default-rtdb.firebaseio.com/" 
-#define DATABASE_SECRET "cPiN2BLyxnQyuKT9bW9seXCbflsiRiw2AQFLae44"
+#define DATABASE_URL "https://smartmeter-65108-default-rtdb.firebaseio.com/" 
+#define DATABASE_SECRET "YddvtPTzh2eeg5CFILSrQIzyVNPmxP0UIJ6DSwqN"
 
 /* 4. Define the user Email and password that alreadey registerd or added in your project */
 //Note: Not required for anonymous user
-#define USER_EMAIL "ecoWise0001@gmail.com"
-#define USER_PASSWORD "ecowise_password"
+#define USER_EMAIL "mymeter@gmail.com"
+#define USER_PASSWORD "mymeter111"
 
 
 
