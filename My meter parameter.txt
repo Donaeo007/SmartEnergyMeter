@@ -1,0 +1,19 @@
+
+firebaseConfig = {
+  “apiKey”: "AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs",
+  “authDomain”: "smartmeter-65108.firebaseapp.com",
+  “databaseURL”: "https://smartmeter-65108-default-rtdb.firebaseio.com",
+  “projectId": "smartmeter-65108",
+  “storageBucket”: "smartmeter-65108.appspot.com",
+  “messagingSenderId”: "189216592800",
+  “appId”: "1:189216592800:web:34999bb818cda37002cac5",
+  “measurementId”: "G-XW2GFDCB98"
+};
+
+
+databaseURL: "https://smartmeter-65108-default-rtdb.firebaseio.com"
+
+Database secret: YddvtPTzh2eeg5CFILSrQIzyVNPmxP0UIJ6DSwqN
+Web API key:  AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs
+Email: mymeter@gmail.com
+Password: mymeter111
