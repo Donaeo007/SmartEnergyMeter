@@ -1,0 +1,132 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Energy Meter Dashboard</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style4.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="profile">
+                <img src="{% static 'assets/img/profile.jpg' %}" alt="Profile Picture">
+                <h2>Henry Klein</h2>
+                <p>Gold Member</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">Configure Parameters</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header>
+                <h1>Smart Energy Meter Dashboard</h1>
+            </header>
+            <section class="gauges">
+                <div class="gauge" id="voltageGauge">
+                    <canvas id="voltageCanvas"></canvas>
+                    <p>Voltage (V)</p>
+                </div>
+                <div class="gauge" id="currentGauge">
+                    <canvas id="currentCanvas"></canvas>
+                    <p>Current (A)</p>
+                </div>
+                <div class="gauge" id="powerFactorGauge">
+                    <canvas id="powerFactorCanvas"></canvas>
+                    <p>Power Factor</p>
+                </div>
+                <div class="gauge" id="powerGauge">
+                    <canvas id="powerCanvas"></canvas>
+                    <p>Power (W)</p>
+                </div>
+            </section>
+            <section class="info">
+                <div class="info-item">
+                    <h2>Energy (kWh)</h2>
+                    <p id="energyValue">120.5</p>
+                </div>
+                <div class="info-item">
+                    <h2>Cost (N)</h2>
+                    <p id="costValue">1500</p>
+                </div>
+                <div class="info-item">
+                    <h2>Load Threshold (A)</h2>
+                    <p id="loadThresholdValue">5</p>
+                </div>
+                <div class="info-item">
+                    <h2>Load Status</h2>
+                    <button id="loadStatusButton">Load Active</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        function createGauge(target, value, min, max) {
+            const opts = {
+                angle: 0.0, // The span of the gauge arc
+                lineWidth: 0.2, // The line thickness
+                radiusScale: 1.0, // Relative radius
+                pointer: {
+                    length: 0.6, // // Relative to gauge radius
+                    strokeWidth: 0.035, // The thickness
+                    color: '#000000' // Fill color
+                },
+                limitMax: false, // If false, max value increases automatically if value > maxValue
+                limitMin: false, // If true, the min value of the gauge will be fixed
+                colorStart: '#6FADCF', // Colors
+                colorStop: '#8FC0DA', // just experiment with them
+                strokeColor: '#E0E0E0', // to see which ones work best for you
+                generateGradient: true,
+                highDpiSupport: true, // High resolution support
+        
+                staticZones: [
+                    {strokeStyle: "#30B32D", min: min, max: (max * 0.3)}, // Green
+                    {strokeStyle: "#FFDD00", min: (max * 0.3), max: (max * 0.6)}, // Yellow
+                    {strokeStyle: "#F03E3E", min: (max * 0.6), max: max} // Red
+                ],
+                staticLabels: {
+                    font: "10px sans-serif",  // Specifies font
+                    labels: [min, max * 0.3, max * 0.6, max],  // Print labels at these values
+                    color: "#000000",  // Optional: Label text color
+                    fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+                },
+            };
+            const gauge = new Gauge(target).setOptions(opts); // create gauge!
+            gauge.maxValue = max; // set max gauge value
+            gauge.setMinValue(min);  // Prefer setter over gauge.minValue = 0
+            gauge.animationSpeed = 32; // set animation speed (32 is default value)
+            gauge.set(value); // set actual value
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const voltageCanvas = document.getElementById('voltageCanvas');
+            const currentCanvas = document.getElementById('currentCanvas');
+            const powerFactorCanvas = document.getElementById('powerFactorCanvas');
+            const powerCanvas = document.getElementById('powerCanvas');
+        
+            createGauge(voltageCanvas, 120, 0, 250);
+            createGauge(currentCanvas, 5, 0, 10);
+            createGauge(powerFactorCanvas, 0.8, 0, 1);
+            createGauge(powerCanvas, 150, 0, 250);
+        
+            const loadStatusButton = document.getElementById('loadStatusButton');
+            loadStatusButton.addEventListener('click', function () {
+                if (loadStatusButton.textContent === 'Load Active') {
+                    loadStatusButton.textContent = 'Load Deactivated';
+                    loadStatusButton.classList.add('deactivated');
+                } else {
+                    loadStatusButton.textContent = 'Load Active';
+                    loadStatusButton.classList.remove('deactivated');
+                }
+            });
+        });
+        
+    </script>        
+</body>
+</html>

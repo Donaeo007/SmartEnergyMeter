@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Parameters</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+    <h1>Update Parameters</h1>
+    <form method="post" action="/meter/updateparameters/">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="unit_cost">Unit Cost:</label>
+            <div class="input-group">
+                <span class="unit">N</span>
+                <input type="number" step="0.01" id="unit_cost" name="unit_cost" value="{{ unit_cost }}">
+            </div>
+            <button type="submit" name="submit" value="unit_cost">Change</button>
+        </div>
+        <div class="form-group">
+            <label for="load_threshold">Load Threshold:</label>
+            <div class="input-group">
+                <input type="number" step="0.01" id="load_threshold" name="load_threshold" value="{{ load_threshold }}">
+                <span class="unit">A</span>
+            </div>
+            <button type="submit" name="submit" value="load_threshold">Change</button>
+        </div>
+        <div class="form-group">
+            <label for="load_duration">Load Deactivation Duration:</label>
+            <div class="input-group">
+                <input type="number" id="load_duration" name="load_duration" value="{{ load_deactivation_duration }}">
+                <span class="unit">ms</span>
+            </div>
+            <button type="submit" name="submit" value="load_duration">Change</button>
+        </div>
+        <div class="form-group">
+            <label for="sync_duration">Sync Timer Duration:</label>
+            <div class="input-group">
+                <input type="number" id="sync_duration" name="sync_duration" value="{{ synctimer_duration }}">
+                <span class="unit">ms</span>
+            </div>
+            <button type="submit" name="submit" value="sync_duration">Change</button>
+        </div>
+        <div class="form-group">
+            <label for="reset_meter">Reset Meter:</label>
+            <input type="checkbox" id="reset_meter" name="reset_meter" {% if reset_meter %}checked{% endif %}>
+            <button type="submit" name="submit" value="reset_meter">Change</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -2,29 +2,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Energy Meter</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <!--<link rel="icon" href="{% static 'assets/img/ecowise_logo.png' %}">-->
-    <link href="{% static 'assets/css/home.css' %}" rel="stylesheet">
+    <!--<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">-->
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> Include jQuery -->
     <script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'assets/js/main.js' %}"></script>
 </head>
 <body>
-    <div class="container">
-        <h1> Smart Energy Meter </h1>
-        <div class="data">
-            <h2 id="vol"> Voltage: {{data.voltage}} </h2>
-            <h2 id="cur"> Current: {{data.current}} </h2>
-            <h2 id="pwr"> Power : {{data.power}}</h2>
-            <h2 id="eng"> Energy : {{data.energy}}</h2>
-            <h2 id="pwf"> Factor : {{data.powerfactor}}</h2>
-            <h2 id="cst"> Cost : {{data.cost}}</h2>
-            <h2 id="utc"> Unixtime : {{data.unixtime}}</h2>
-        </div>
-    </div>
+    <h1> Smart Energy Meter </h1>
+    <h2 id="vol"> Volatge: {{data.voltage}} </h2>
+    <h2 id="cur"> Current: {{data.current}} </h2>
+    <h2 id="pwr"> Power : {{data.power}}</h2>
+    <h2 id="eng"> energy : {{data.energy}}</h2>
+    <h2 id="pwf"> factor : {{data.powerfactor}}</h2>
+    <h2 id="cst"> cost : {{data.cost}}</h2>
+    <h2 id="utc"> unixtime : {{data.unixtime}}</h2>
+    <!--<script>
+        var deviceData = {
+            voltage:{{data.voltage}},
+            current:{{data.current}},
+            power:{{data.power}},
+            energy:{{data.energy}},
+            cost:{{data.cost}},
+            unixtime:{{data.unixtime}}
+        }
+    </script>-->
+    <!--<script src="{% static 'assets/js/main.js' %}"></script>-->
     <script>
         function updateDashboard() {
             console.log("updateDashboard called");
@@ -38,7 +46,7 @@
                     $('#cur').text('Current: ' + result['current']);
                     $('#pwr').text('Power: ' + result['power']);
                     $('#eng').text('Energy: ' + result['energy']);
-                    $('#pwf').text('Factor: ' + result['powerfactor']);
+                    $('#pwf').text('factor: ' + result['powerfactor']);
                     $('#cst').text('Cost: ' + result['cost']);
                     $('#utc').text('Unixtime: ' + result['unixtime']);
                 },
@@ -48,8 +56,8 @@
             });
         }
 
-        // Call the updateDashboard function every 5 seconds
+        // Call the updateDashboard function every 2 seconds
         setInterval(updateDashboard, 5000);
     </script>
-</body>
+</body>	
 </html>
