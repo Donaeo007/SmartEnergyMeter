@@ -6,15 +6,16 @@ from django.http import HttpResponse, JsonResponse  #http: For downloading of cs
 
 
 firebaseConfig = {
-  "apiKey": "AIzaSyD-c45EtVmZ4PYWdP6uce7HsmqLcIdoUhc",
-  "authDomain": "ecowise-48198.firebaseapp.com",
-  "databaseURL": "https://ecowise-48198-default-rtdb.firebaseio.com",
-  "projectId": "ecowise-48198",
-  "storageBucket": "ecowise-48198.appspot.com",
-  "messagingSenderId": "513968660014",
-  "appId": "1:513968660014:web:7ea6028e88ee874aee49bf",
-  "measurementId": "G-TMN6ZQX0DX"
+  "apiKey": "AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs",
+  "authDomain": "smartmeter-65108.firebaseapp.com",
+  "databaseURL": "https://smartmeter-65108-default-rtdb.firebaseio.com",
+  "projectId": "smartmeter-65108",
+  "storageBucket": "smartmeter-65108.appspot.com",
+  "messagingSenderId": "189216592800",
+  "appId": "1:189216592800:web:34999bb818cda37002cac5",
+  "measurementId": "G-XW2GFDCB98"
 }
+
 
 # Initialize Firebase
 firebase = pyrebase.initialize_app(firebaseConfig)
