@@ -1,0 +1,4 @@
+python==3.11.9
+django==5.0.6
+pyrebase4
+pytz
