@@ -55,7 +55,7 @@ def download_csv(request):
     #response['Content-Disposition'] = 'attachment; filename=' + name + '
 
     writer = csv.writer(response)
-    writer.writerow(['Date & Time', 'Cumulative Energy(kWh)', "Cost(NGN)"
+    writer.writerow(['Date & Time', 'Cumulative Energy(kWh)', 'Cost(NGN)',
                       'Power (kW)', 'Voltage (v)', 'Current(I)',
                       'Meter Reset',])  # Add column headers
 
