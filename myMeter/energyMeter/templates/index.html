@@ -24,6 +24,15 @@
             <h2 id="cst"> Cost : {{data.cost}}</h2>
             <h2 id="utc"> Unixtime : {{data.unixtime}}</h2>
         </div>
+        <div>
+            <form action="/meter/download_csv" method="post">
+                {% csrf_token %}
+                <button type="submit" class="pull-right btn btn-success"
+                 style="width:138px;height:38px;float:right; background-color:#012970; margin:3px;"
+                 id="download">Download Data</button>
+               
+            </form>
+        </div>
     </div>
     <script>
         function updateDashboard() {

@@ -46,7 +46,7 @@ def LoadLineChart(request):  # Currently in use to load kine chart
 '''
 
 
-def download_csv(request, pk):
+def download_csv(request):
     
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="meter_data.csv"'
@@ -63,7 +63,7 @@ def download_csv(request, pk):
 
     for data in DeviceData:
         writer.writerow([data.converted_unixtime,
-                         data.cumm_energy, data.cost, data.power, data.voltage,
+                         data.cumm_energy, data.energy_cost, data.power, data.voltage,
                          data.current,data.meter_reset]) 
     return response
 
