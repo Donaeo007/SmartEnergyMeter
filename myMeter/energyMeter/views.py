@@ -28,45 +28,6 @@ authentiction = firebase.auth()
 Sourcedatabase = firebase.database()
 
 
-'''
-
-def LoadLineChart(request):  # Currently in use to load kine chart
-    # Generate sample data for the chart (replace with your actual data retrieval logic)
-    label = ['time1', 'time 2', 'time 3', 'time4', 'time5',
-             'time6','time7','time8','time9','time10','time11','time12']
-    data = [randint(0, 30) for _ in range(len(label))]  # Random data for demo
-
-    # Prepare data in JSON format
-    chart_data = {
-        'label': label,
-        'data': data,
-    }
-
-    return JsonResponse(chart_data)
-'''
-
-
-def download_csv(request):
-    
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="meter_data.csv"'
-    # DeviceData = boxData.objects.filter(device_id=pk)  # Fetch your data from the database
-    # name = "Box_" + DeviceData.device_id + "_data_.csv"
-    #response['Content-Disposition'] = 'attachment; filename=' + name + '
-
-    writer = csv.writer(response)
-    writer.writerow(['Date & Time', 'Cumulative Energy(kWh)', 'Cost(NGN)',
-                      'Power (kW)', 'Voltage (v)', 'Current(I)',
-                      'Meter Reset',])  # Add column headers
-
-    DeviceData = meterData.objects.all()  # Fetch your data from the database
-
-    for data in DeviceData:
-        writer.writerow([data.converted_unixtime,
-                         data.cumm_energy, data.energy_cost, data.power, data.voltage,
-                         data.current,data.meter_reset]) 
-    return response
-
 
 
 def changeUnixtime(unix_timestamp):
@@ -81,6 +42,67 @@ def changeUnixtime(unix_timestamp):
     new_time = local_time.strftime("%B %d, %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.")
 
     return local_time, new_time
+'''
+
+def LoadS(request):  # Currently in use to load kine chart
+    # Generate sample data for the chart (replace with your actual data retrieval logic)
+    label = ['time1', 'time 2', 'time 3', 'time4', 'time5',
+             'time6','time7','time8','time9','time10','time11','time12']
+    data = [randint(0, 30) for _ in range(len(label))]  # Random data for demo
+
+    # Prepare data in JSON format
+    chart_data = {
+        'label': label,
+        'data': data,
+    }
+
+    return JsonResponse(chart_data)
+'''
+
+def LoadLineChart(request):
+    # Retrieve the latest 5 records and reverse them
+    dataList = list(meterData.objects.all().order_by('-unix_time')[:10])
+    dataList.reverse()
+    
+    # Extract labels and data
+    
+    #labels = [item.converted_unixtime for item in dataList]
+    labels = [changeUnixtime(item.unix_time)[1] for item in dataList]
+    data = [item.cumm_energy for item in dataList]
+
+    # Prepare data in JSON format
+    chart_data = {
+        'labels': labels,
+        'data': data,
+    }
+
+    return JsonResponse(chart_data)
+
+
+
+def download_csv(request):
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="meter_data.csv"'
+    # DeviceData = boxData.objects.filter(device_id=pk)  # Fetch your data from the database
+    # name = "Box_" + DeviceData.device_id + "_data_.csv"
+    #response['Content-Disposition'] = 'attachment; filename=' + name + '
+
+    writer = csv.writer(response)
+    writer.writerow(['Date & Time', 'Cumulative Energy(kWh)', 'Cost(NGN)',
+                      'Power (kW)','Power Factor', 'Voltage (v)', 'Current(I)',
+                      'Meter Reset',])  # Add column headers
+
+    DeviceData = meterData.objects.all()  # Fetch your data from the database
+
+    for data in DeviceData:
+        writer.writerow([data.converted_unixtime,
+                         data.cumm_energy, data.energy_cost, data.power, data.power_factor,
+                         data.voltage, data.current,data.meter_reset]) 
+    return response
+
+
+
 
 
 def homepage(request):
@@ -101,6 +123,24 @@ def homepage(request):
             "energy":energy, "powerfactor":powerfactor, "cost":cost, "unixtime":new_datetime}
     return render(request, "index.html", {"data": Data})
 
+def coronahome(request):
+    voltage = Sourcedatabase.child('smartMeter').child('meterData').child('voltage').get().val()
+    current = Sourcedatabase.child('smartMeter').child('meterData').child('current').get().val()
+    power = Sourcedatabase.child('smartMeter').child('meterData').child('power').get().val()
+    energy = Sourcedatabase.child('smartMeter').child('meterData').child('energy').get().val()
+    cost = Sourcedatabase.child('smartMeter').child('meterData').child('cost').get().val()
+    powerfactor = Sourcedatabase.child('smartMeter').child('meterData').child('powerfactor').get().val()
+    unixtime = Sourcedatabase.child('smartMeter').child('meterData').child('unixtime').get().val()
+    
+    convertedTime, new_datetime = changeUnixtime(unixtime)
+      
+    Data = {"voltage": voltage, "current": current, "power":power,
+            "energy":energy, "powerfactor":powerfactor, "cost":round(cost, 2), "unixtime":new_datetime}
+    
+    #dataList = meterData.objects.filter(since=since).order_by('-id')[:5]
+    dataList = meterData.objects.all().order_by('-unix_time')[:5]
+    dataList = reversed(dataList)
+    return render(request, 'corona_index.html', {"data":Data, "dataList":dataList})
 
 def updateDashboard(request):
     latest_data = meterData.objects.order_by('save_counter').last()
