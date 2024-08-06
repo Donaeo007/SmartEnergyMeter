@@ -190,7 +190,7 @@ $(document).ready(function() {
 
   // Initial fetch and start interval to update data
   updateDashboard();
-  setInterval(updateDashboard, 8000);
+  setInterval(updateDashboard, 2000);
 });
 
 //===========================================================================
