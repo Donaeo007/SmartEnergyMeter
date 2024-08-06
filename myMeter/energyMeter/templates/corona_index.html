@@ -26,6 +26,8 @@
     <!--For my custom linechart-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <div class="container-scroller">
@@ -130,6 +132,7 @@
               <span class="menu-title">Download data</span>
             </a>
           </li>
+          <!--
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/charts/chartjs.html">
               <span class="menu-icon">
@@ -138,7 +141,7 @@
               <span class="menu-title">Charts</span>
             </a>
           </li>
-          <!--
+          
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/icons/mdi.html">
               <span class="menu-icon">
@@ -178,7 +181,7 @@
       </nav>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_navbar.html -->
+        <!-- partial:partials/_navbar.html  CORONA LOGO HERE-->
         <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
             <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{%static 'assets/corona/assets/images/logo-mini.svg'%}" alt="logo" /></a>
@@ -194,7 +197,9 @@
                 </form>
               </li>
             </ul>
+            
             <ul class="navbar-nav navbar-nav-right">
+              <!--
               <li class="nav-item dropdown d-none d-lg-block">
                 <a class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Create New Project</a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
@@ -236,6 +241,7 @@
                   <p class="p-3 mb-0 text-center">See all projects</p>
                 </div>
               </li>
+            -->
               <li class="nav-item nav-settings d-none d-lg-block">
                 <a class="nav-link" href="#">
                   <i class="mdi mdi-view-grid"></i>
@@ -406,7 +412,7 @@
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">{{data.unixtime}}</h3>
+                          <h3 class="mb-0" id="utc">{{data.unixtime}}</h3>
                           <!--<p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>-->
                         </div>
                       </div>
@@ -426,8 +432,8 @@
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">{{data.energy}}</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+11%</p>
+                          <h3 class="mb-0" id="eng">{{data.energy}}</h3>
+                          <p class="text-success ml-2 mb-0 font-weight-medium" id="engchg">{{data.energy_change}}%</p>
                         </div>
                       </div>
                       <div class="col-3">
@@ -446,8 +452,8 @@
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">NGN{{data.cost}}</h3>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
+                          <h3 class="mb-0" id="cst">NGN{{data.cost}}</h3>
+                          <p class="text-danger ml-2 mb-0 font-weight-medium" id="cstchg">{{data.cost_change}}%</p>
                         </div>
                       </div>
                       <div class="col-3">
@@ -466,8 +472,8 @@
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">{{data.power}}</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                          <h3 class="mb-0"id="pwr">{{data.power}}</h3>
+                          <p class="text-success ml-2 mb-0 font-weight-medium" id="pwrchg">{{data.power_change}}%</p>
                         </div>
                       </div>
                       <div class="col-3">
@@ -486,14 +492,14 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">VOLTAGE</h4>
-                    <canvas id="transaction-history" class="transaction-chart"></canvas>
+                    <canvas id="VoltagegaugeChart" class="transaction-chart"></canvas>
                     <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                       <div class="text-md-center text-xl-left">
                         <h6 class="mb-1">Voltage</h6>
-                        <p class="text-muted mb-0">{{data.unixtime}}</p>
+                        <p class="text-muted mb-0" id="utc2">{{data.unixtime}}</p>
                       </div>
                       <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                        <h6 class="font-weight-bold mb-0">{{data.voltage}}V</h6>
+                        <h6 class="font-weight-bold mb-0" id="vol">{{data.voltage}}V</h6>
                       </div>
                     </div>
                     <!--
@@ -517,15 +523,15 @@
                     <!--I added next line only i.e 514-->
                     <!--<div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>-->
                     <h4 class="card-title">CURRENT</h4>
-                   <canvas id="transaction-history" class="transaction-chart"></canvas>
+                   <canvas id="CurrentgaugeChart" class="transaction-chart"></canvas>
                    <!--<canvas id="transaction-history" class="transaction-chart chartjs-render-monitor" width="569" height="284" style="display: block; width: 569px; height: 284px;"></canvas>-->
                     <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                       <div class="text-md-center text-xl-left">
                         <h6 class="mb-1">Current (A)</h6>
-                        <p class="text-muted mb-0">{{data.unixtime}}</p>
+                        <p id="utc3" class="text-muted mb-0">{{data.unixtime}}</p>
                       </div>
                       <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                        <h6 class="font-weight-bold mb-0">{{data.current}}A</h6>
+                        <h6 class="font-weight-bold mb-0" id="cur">{{data.current}}A</h6>
                       </div>
                     </div>
                     <!--
@@ -547,14 +553,14 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">POWER</h4>
-                    <canvas id="transaction-history" class="transaction-chart"></canvas>
+                    <canvas id="PowergaugeChart" class="transaction-chart"></canvas>
                     <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                       <div class="text-md-center text-xl-left">
                         <h6 class="mb-1">POWER (W)</h6>
-                        <p class="text-muted mb-0">{{data.unixtime}}</p>
+                        <p id="utc4" class="text-muted mb-0">{{data.unixtime}}</p>
                       </div>
                       <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                        <h6 class="font-weight-bold mb-0">{{data.power}}W</h6>
+                        <h6 class="font-weight-bold mb-0" id="pwr2">{{data.power}}W</h6>
                       </div>
                     </div>
                     <!--
@@ -685,8 +691,8 @@
                     <div class="row">
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">{{data.energy}}kWh</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                          <h2 class="mb-0" id="eng2">{{data.energy}}kWh</h2>
+                          <p id="engchg" class="text-success ml-2 mb-0 font-weight-medium">{{data.energy_change}}%</p>
                         </div>
                         <!--<h6 class="text-muted font-weight-normal">11.38% Since last month</h6>-->
                       </div>
@@ -704,8 +710,8 @@
                     <div class="row">
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">NGN{{data.cost}}</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p>
+                          <h2 id="cst2" class="mb-0">NGN{{data.cost}}</h2>
+                          <p id="cstchg" class="text-success ml-2 mb-0 font-weight-medium">{{data.cost_change}}%</p>
                         </div>
                         <!--<h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>-->
                       </div>
@@ -723,8 +729,8 @@
                     <div class="row">
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">{{data.powerfactor}}</h2>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p>
+                          <h2 id="pwf" class="mb-0">{{data.powerfactor}}</h2>
+                          <p id="pwfchg" class="text-danger ml-2 mb-0 font-weight-medium">{{data.powerfactor_change}}% </p>
                         </div>
                         <!--<h6 class="text-muted font-weight-normal">2.27% Since last month</h6>-->
                       </div>
@@ -755,7 +761,7 @@
                     <div class="col-12 grid-margin stretch-card">
                     <div class="card">
                       <div class="card-body">
-                        <h4 class="card-title">Cumulative Energyy in kWh w.r.t Time</h4>
+                        <h4 class="card-title">Cumulative Energyy &lbrack;kWh&rbrack; w.r.t Time</h4>
                         <!--<canvas id="lineChart" style="height: 150%; width: 100%;"></canvas>-->
                         <canvas id="lineChart" height="70"></canvas>
                       </div>
@@ -1194,6 +1200,7 @@
     <script src="{%static 'assets/corona/assets/js/dashboard.js'%}"></script>
     <!-- End custom js for this page -->
     <script src="{%static 'assets/corona/assets/js/chart.js'%}"></script>
+    <!--<script src="{%static 'assets/corona/assets/js/aaa.js'%}"></script>-->
     <!--<script src="{% static 'assets/corona/assets/js/mylineeeeechart.js' %}"></script>-->
 
   </body>

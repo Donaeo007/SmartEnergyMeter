@@ -78,7 +78,17 @@ def LoadLineChart(request):
 
     return JsonResponse(chart_data)
 
-
+def percentageChange(current, previous):
+    
+    if previous != 0:
+        current = float(current)
+        previous = float(previous)
+        change = current - previous
+        percent_change = round(((change/previous)*100), 2)
+    
+    else: 
+        percent_change = 0.00
+    return percent_change
 
 def download_csv(request):
     
@@ -133,14 +143,25 @@ def coronahome(request):
     unixtime = Sourcedatabase.child('smartMeter').child('meterData').child('unixtime').get().val()
     
     convertedTime, new_datetime = changeUnixtime(unixtime)
-      
+    
+    lastData = meterData.objects.last()
+    voltage_change = percentageChange(voltage, lastData.voltage)
+    current_change = percentageChange(current, lastData.current)
+    power_change = percentageChange(power, lastData.power)
+    cost_change = percentageChange(cost, lastData.energy_cost)
+    energy_change = percentageChange(energy, lastData.cumm_energy)
+    powerfactor_change = percentageChange(powerfactor, lastData.power_factor)
+    
     Data = {"voltage": voltage, "current": current, "power":power,
-            "energy":energy, "powerfactor":powerfactor, "cost":round(cost, 2), "unixtime":new_datetime}
+            "energy":energy, "powerfactor":powerfactor, "cost":round(cost, 2), "unixtime":new_datetime,
+            "voltage_change":voltage_change, "current_change":current_change,"power_change":power_change,
+            "cost_change":cost_change,"energy_change":energy_change, "powerfactor_change":powerfactor_change}
     
     #dataList = meterData.objects.filter(since=since).order_by('-id')[:5]
     dataList = meterData.objects.all().order_by('-unix_time')[:5]
     dataList = reversed(dataList)
     return render(request, 'corona_index.html', {"data":Data, "dataList":dataList})
+
 
 def updateDashboard(request):
     latest_data = meterData.objects.order_by('save_counter').last()
@@ -159,17 +180,47 @@ def updateDashboard(request):
     reset_meter = Sourcedatabase.child('smartMeter').child('meterData').child('resetMeter').get().val()
  
     convertedTime, new_datetime = changeUnixtime(unixtime)
-    updatedData = {"voltage": voltage, "current": current, "power":power,
-            "energy":energy, "powerfactor":powerfactor,"cost":cost, "unixtime":new_datetime,"resetMeter":reset_meter}
-    counter += 1
     
+    lastData = meterData.objects.last()
+    voltage_change = percentageChange(voltage, lastData.voltage)
+    current_change = percentageChange(current, lastData.current)
+    power_change = percentageChange(power, lastData.power)
+    cost_change = percentageChange(cost, lastData.energy_cost)
+    energy_change = percentageChange(energy, lastData.cumm_energy)
+    powerfactor_change = percentageChange(powerfactor, lastData.power_factor)
+    
+    
+    if voltage != 0: 
+        voltageGuage = round(((voltage*100)/250), 2)
+    else:
+        voltageGuage = 0
+    
+    if current != 0: 
+        currentGuage = round(((current*100)/2), 2)
+    else:
+        currentGuage = 0    
+    
+    if power != 0: 
+        powerGuage = round(((power*100)/200), 2)
+    else:
+        powerGuage = 0
+    
+    updatedData = {"voltage": voltage, "current": current, "power":round(power, 2),
+            "energy":energy, "powerfactor":powerfactor,"cost":round(cost, 2),
+            "unixtime":new_datetime,"resetMeter":reset_meter,"voltage_change":voltage_change,
+            "current_change":current_change,"power_change":power_change,"energy_change":energy_change,
+            "cost_change":cost_change,
+            "voltageGuageFill":voltageGuage,
+            "currentGuageFill":currentGuage,
+            "powerGuageFill":powerGuage,"powerfactor_change":powerfactor_change}
+    counter += 1
     
     if counter%10 == 0:
         try:
-            new_meter_data = meterData.objects.create(save_counter=counter,energy_cost=cost, meter_reset=reset_meter,
+            new_meter_data = meterData.objects.create(save_counter=counter,energy_cost=round(cost,2), meter_reset=reset_meter,
                                                       converted_unixtime=convertedTime, unix_time=unixtime,
                                                       power_factor=powerfactor, voltage=voltage, current=current,
-                                                      power=power, cumm_energy=energy)
+                                                      power=round(power, 2), cumm_energy=energy)
         except IntegrityError:
             latest_data.save_counter = counter
             latest_data.save()  
@@ -241,3 +292,5 @@ def update_parameters(request):
        }
     return render(request, 'parameters.html', context)
 
+
+#DEMO Description
