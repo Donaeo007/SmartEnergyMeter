@@ -204,7 +204,7 @@ def coronahome(request):
     if cummEnergyChange == 0.00:
         cummEnergyChange = power/(3600*1000)
     pred_daily_energy, pred_daily_cost = predictCost(cummEnergyChange, power, powerfactor, voltage, current, timeInterval)
-    cumm_daily_energy = pred_daily_energy + float(energy)
+    cumm_daily_energy = round((pred_daily_energy + float(energy)),3)
     total_daily_cost = round((pred_daily_cost + float(cost)), 2)
     
     Data = {"voltage": voltage, "current": current, "power":round(power, 2),
@@ -269,7 +269,7 @@ def updateDashboard(request):
         cummEnergyChange = float(power/(3600*1000))
         timeInterval = 1
     pred_daily_energy, pred_daily_cost = predictCost(cummEnergyChange, power, powerfactor, voltage, current, timeInterval)
-    cumm_daily_energy = pred_daily_energy + float(energy)
+    cumm_daily_energy = round((pred_daily_energy + float(energy)),3)
     total_daily_cost = round((pred_daily_cost + float(cost)), 2)
     updatedData = {"voltage": voltage, "current": current, "power":round(power, 2),
             "energy":energy, "powerfactor":powerfactor,"cost":round(cost, 2),
