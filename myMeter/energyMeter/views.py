@@ -7,8 +7,24 @@ import pytz # Converting unixtime to standard time
 import datetime # Converting unixtime to standard time
 import csv  # for downloading csv files
 from django.db import IntegrityError
+
+#Machine Learning Libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import joblib
+import numpy as np
+
+import os
+from django.conf import settings
+
+
 # Create your views here.
 
+# super user deatils
+# username: meteradmin
+#password: smartmeterpassword111
 
 firebaseConfig = {
   "apiKey": "AIzaSyBK3M1HN0ZaOiJFzvxAWnpWnmCtdNmPzFs",
@@ -28,6 +44,55 @@ authentiction = firebase.auth()
 Sourcedatabase = firebase.database()
 
 
+#Machine learning Linear regression Model
+
+ # Load the trained model from the file
+model_path = os.path.join(settings.BASE_DIR, 'linear_regression_model2.pkl')
+lr_model = joblib.load(model_path)
+
+
+'''
+def predictCost(cummEnergyChange, power, powerFactor, voltage, current, timeInterval):
+  
+    # Load the trained model from the file
+    #lr_model = joblib.load('linear_regression_model.pkl')
+
+    # Example new data for prediction
+    # Replace this with actual feature values
+    predicted_daily_energy =  round(((cummEnergyChange*3600*24)/timeInterval), 3)  
+    X_new = np.array([[predicted_daily_energy, power, powerFactor, voltage, current]])  # Example: [cumm energy, Power, PowerFactor, Voltage, Current]
+
+    # Predict the cost
+    predicted_cost = lr_model.predict(X_new)
+
+    # Output the result
+    # print(f"Predicted Cost: {predicted_cost[0]}")
+    return predicted_daily_energy, round(predicted_cost[0], 2)
+
+'''
+
+def predictCost(cummEnergyChange, power, powerFactor, voltage, current, timeInterval):
+    # Load the trained model from the file
+    model_path = os.path.join(settings.BASE_DIR, 'linear_regression_model2.pkl')
+    lr_model = joblib.load(model_path)
+
+    # Calculate the predicted daily energy
+    predicted_daily_energy = round(((cummEnergyChange * 3600 * 24) / timeInterval), 3)
+    
+    # Example new data for prediction (with correct feature names)
+    X_new = pd.DataFrame({
+        'Cumulative Energy(kWh)': [predicted_daily_energy],  # Replace with actual feature names
+        'Power (kW)': [power],
+        'Power Factor': [powerFactor],
+        'Voltage (v)': [voltage],
+        'Current(I)': [current]
+    })
+
+    # Predict the cost
+    predicted_cost = lr_model.predict(X_new)
+
+    # Output the result
+    return predicted_daily_energy, round(predicted_cost[0], 2)
 
 
 def changeUnixtime(unix_timestamp):
@@ -42,22 +107,6 @@ def changeUnixtime(unix_timestamp):
     new_time = local_time.strftime("%B %d, %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.")
 
     return local_time, new_time
-'''
-
-def LoadS(request):  # Currently in use to load kine chart
-    # Generate sample data for the chart (replace with your actual data retrieval logic)
-    label = ['time1', 'time 2', 'time 3', 'time4', 'time5',
-             'time6','time7','time8','time9','time10','time11','time12']
-    data = [randint(0, 30) for _ in range(len(label))]  # Random data for demo
-
-    # Prepare data in JSON format
-    chart_data = {
-        'label': label,
-        'data': data,
-    }
-
-    return JsonResponse(chart_data)
-'''
 
 def LoadLineChart(request):
     # Retrieve the latest 5 records and reverse them
@@ -80,7 +129,7 @@ def LoadLineChart(request):
 
 def percentageChange(current, previous):
     
-    if previous != 0:
+    if previous != 0 or None:
         current = float(current)
         previous = float(previous)
         change = current - previous
@@ -110,9 +159,6 @@ def download_csv(request):
                          data.cumm_energy, data.energy_cost, data.power, data.power_factor,
                          data.voltage, data.current,data.meter_reset]) 
     return response
-
-
-
 
 
 def homepage(request):
@@ -152,10 +198,20 @@ def coronahome(request):
     energy_change = percentageChange(energy, lastData.cumm_energy)
     powerfactor_change = percentageChange(powerfactor, lastData.power_factor)
     
-    Data = {"voltage": voltage, "current": current, "power":power,
+    # call ML model
+    timeInterval = 2  #Time for reading data from Hardware
+    cummEnergyChange = float(energy) - float(lastData.cumm_energy)
+    if cummEnergyChange == 0.00:
+        cummEnergyChange = power/(3600*1000)
+    pred_daily_energy, pred_daily_cost = predictCost(cummEnergyChange, power, powerfactor, voltage, current, timeInterval)
+    cumm_daily_energy = pred_daily_energy + float(energy)
+    total_daily_cost = round((pred_daily_cost + float(cost)), 2)
+    
+    Data = {"voltage": voltage, "current": current, "power":round(power, 2),
             "energy":energy, "powerfactor":powerfactor, "cost":round(cost, 2), "unixtime":new_datetime,
             "voltage_change":voltage_change, "current_change":current_change,"power_change":power_change,
-            "cost_change":cost_change,"energy_change":energy_change, "powerfactor_change":powerfactor_change}
+            "cost_change":cost_change,"energy_change":energy_change, "powerfactor_change":powerfactor_change,
+            "predictedEnergy":cumm_daily_energy, "predictedCost":total_daily_cost}
     
     #dataList = meterData.objects.filter(since=since).order_by('-id')[:5]
     dataList = meterData.objects.all().order_by('-unix_time')[:5]
@@ -190,6 +246,7 @@ def updateDashboard(request):
     powerfactor_change = percentageChange(powerfactor, lastData.power_factor)
     
     
+    
     if voltage != 0: 
         voltageGuage = round(((voltage*100)/250), 2)
     else:
@@ -204,11 +261,21 @@ def updateDashboard(request):
         powerGuage = round(((power*100)/200), 2)
     else:
         powerGuage = 0
-    
+        
+    # call ML model
+    timeInterval = 2000  #Time for reading data from Hardware
+    cummEnergyChange = float(energy) - float(lastData.cumm_energy)
+    if cummEnergyChange == 0.00:
+        cummEnergyChange = float(power/(3600*1000))
+        timeInterval = 1
+    pred_daily_energy, pred_daily_cost = predictCost(cummEnergyChange, power, powerfactor, voltage, current, timeInterval)
+    cumm_daily_energy = pred_daily_energy + float(energy)
+    total_daily_cost = round((pred_daily_cost + float(cost)), 2)
     updatedData = {"voltage": voltage, "current": current, "power":round(power, 2),
             "energy":energy, "powerfactor":powerfactor,"cost":round(cost, 2),
             "unixtime":new_datetime,"resetMeter":reset_meter,"voltage_change":voltage_change,
             "current_change":current_change,"power_change":power_change,"energy_change":energy_change,
+            "predictedEnergy":cumm_daily_energy, "predictedCost":total_daily_cost,
             "cost_change":cost_change,
             "voltageGuageFill":voltageGuage,
             "currentGuageFill":currentGuage,
@@ -229,11 +296,6 @@ def updateDashboard(request):
         latest_data.save()      
     
     return JsonResponse(updatedData)
-  
-
-# Sourcedatabase.child('smartMeter').child(meterData).update({'resetMeter': DeviceData.switch_reset})
-
-
 
 @csrf_exempt
 def update_parameters(request):
@@ -291,6 +353,3 @@ def update_parameters(request):
         'reset_meter': False,
        }
     return render(request, 'parameters.html', context)
-
-
-#DEMO Description

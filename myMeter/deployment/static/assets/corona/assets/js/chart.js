@@ -152,10 +152,12 @@ $(document).ready(function() {
               $('#pwr').html(result['power']+'<bold>W</bold>');
               $('#pwr2').html(result['power']+'<bold>W</bold>');
               $('#eng').html(result['energy']+'<bold>kWh</bold>');
+              $('#predeng').html(result['predictedEnergy']+'<bold>kWh</bold>');
               $('#eng2').html(result['energy']+'<bold>kWh</bold>');
               $('#pwf').html(result['powerfactor']);
               $('#cst').html('<bold>NGN</bold>'+result['cost']);
               $('#cst2').html('<bold>NGN</bold>'+result['cost']);
+              $('#predcst').html('<bold>NGN</bold>'+result['predictedCost']);
               $('#utc').html(result['unixtime']);
               $('#utc2').html(result['unixtime']);
               $('#utc3').html(result['unixtime']);
