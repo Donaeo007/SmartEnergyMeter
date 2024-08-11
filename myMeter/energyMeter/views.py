@@ -51,26 +51,6 @@ model_path = os.path.join(settings.BASE_DIR, 'linear_regression_model2.pkl')
 lr_model = joblib.load(model_path)
 
 
-'''
-def predictCost(cummEnergyChange, power, powerFactor, voltage, current, timeInterval):
-  
-    # Load the trained model from the file
-    #lr_model = joblib.load('linear_regression_model.pkl')
-
-    # Example new data for prediction
-    # Replace this with actual feature values
-    predicted_daily_energy =  round(((cummEnergyChange*3600*24)/timeInterval), 3)  
-    X_new = np.array([[predicted_daily_energy, power, powerFactor, voltage, current]])  # Example: [cumm energy, Power, PowerFactor, Voltage, Current]
-
-    # Predict the cost
-    predicted_cost = lr_model.predict(X_new)
-
-    # Output the result
-    # print(f"Predicted Cost: {predicted_cost[0]}")
-    return predicted_daily_energy, round(predicted_cost[0], 2)
-
-'''
-
 def predictCost(cummEnergyChange, power, powerFactor, voltage, current, timeInterval):
     # Load the trained model from the file
     model_path = os.path.join(settings.BASE_DIR, 'linear_regression_model2.pkl')
@@ -204,14 +184,14 @@ def coronahome(request):
     if cummEnergyChange == 0.00:
         cummEnergyChange = power/(3600*1000)
     pred_daily_energy, pred_daily_cost = predictCost(cummEnergyChange, power, powerfactor, voltage, current, timeInterval)
-    cumm_daily_energy = round((pred_daily_energy + float(energy)),3)
-    total_daily_cost = round((pred_daily_cost + float(cost)), 2)
+    #cumm_daily_energy = round((pred_daily_energy + float(energy)),3)
+    #total_daily_cost = round((pred_daily_cost + float(cost)), 2)
     
     Data = {"voltage": voltage, "current": current, "power":round(power, 2),
             "energy":energy, "powerfactor":powerfactor, "cost":round(cost, 2), "unixtime":new_datetime,
             "voltage_change":voltage_change, "current_change":current_change,"power_change":power_change,
             "cost_change":cost_change,"energy_change":energy_change, "powerfactor_change":powerfactor_change,
-            "predictedEnergy":cumm_daily_energy, "predictedCost":total_daily_cost}
+            "predictedEnergy":pred_daily_energy, "predictedCost":pred_daily_cost}
     
     #dataList = meterData.objects.filter(since=since).order_by('-id')[:5]
     dataList = meterData.objects.all().order_by('-unix_time')[:5]
@@ -275,7 +255,7 @@ def updateDashboard(request):
             "energy":energy, "powerfactor":powerfactor,"cost":round(cost, 2),
             "unixtime":new_datetime,"resetMeter":reset_meter,"voltage_change":voltage_change,
             "current_change":current_change,"power_change":power_change,"energy_change":energy_change,
-            "predictedEnergy":cumm_daily_energy, "predictedCost":total_daily_cost,
+            "predictedEnergy":pred_daily_energy, "predictedCost":pred_daily_cost,
             "cost_change":cost_change,
             "voltageGuageFill":voltageGuage,
             "currentGuageFill":currentGuage,
